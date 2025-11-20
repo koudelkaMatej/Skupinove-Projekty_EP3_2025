@@ -2,4 +2,4 @@
 
 # Krupka, Kunc, Lažo, Lipš
 
-# karel IV.
+# karel IV..
