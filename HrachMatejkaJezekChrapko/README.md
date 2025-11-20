@@ -1,0 +1,1 @@
+# Skupinov-ProjektyEP3_2025
