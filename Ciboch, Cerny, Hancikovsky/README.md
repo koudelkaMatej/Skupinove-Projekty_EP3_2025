@@ -1,4 +1,7 @@
 # Skupinov-ProjektyEP3_2025
 
-# skupina, Ciboch, Černý, Hančikovský
+# skupina, Ciboch, Černý, Hančikovský 
+
+
+
 
