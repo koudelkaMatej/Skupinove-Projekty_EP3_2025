@@ -1,6 +1,7 @@
 import pygame
 from objects.button import Button
 from assets.colors import *
+from assets.fonts import *
 
 #definice menu s tlačítky
 
@@ -29,7 +30,7 @@ class Menu:
 
     def draw(self, screen):
         screen.fill(MENU_BG)
-        font = pygame.font.Font(None, 72)
+        font = HLAVNI_FONT
         title = font.render("Unnamed Dungeon", True, TITLE)
         screen.blit(title, title.get_rect(center=(self.screen_width//2, 80)))
         
