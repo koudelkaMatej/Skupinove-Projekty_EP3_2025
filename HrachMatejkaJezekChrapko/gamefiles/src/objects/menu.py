@@ -30,7 +30,7 @@ class Menu:
 
     def draw(self, screen):
         screen.fill(MENU_BG)
-        font = HLAVNI_FONT
+        font = pygame.font.Font(None, 72)
         title = font.render("Unnamed Dungeon", True, TITLE)
         screen.blit(title, title.get_rect(center=(self.screen_width//2, 80)))
         
