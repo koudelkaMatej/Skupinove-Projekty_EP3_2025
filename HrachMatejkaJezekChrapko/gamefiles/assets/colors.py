@@ -1,3 +1,5 @@
+#barvy použité ve hře
+
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 
