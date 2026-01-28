@@ -6,6 +6,9 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
 FPS = 60
 
+
+# Klavesove zkratky
+
 KEYBINDS = {
     "up": pygame.K_w,
     "down": pygame.K_s,

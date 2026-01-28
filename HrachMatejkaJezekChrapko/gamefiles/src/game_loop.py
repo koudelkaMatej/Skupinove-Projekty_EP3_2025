@@ -1,3 +1,5 @@
+#importy knihoven
+
 import pygame, sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -6,6 +8,8 @@ from assets.settings import *
 from assets.colors import *
 from objects.player import Player
 from objects.menu import Menu
+
+#celkové nastavení herní smyčky
 
 class Game:
     def __init__(self):
@@ -32,6 +36,8 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
+                #nastavení tlačítek menu.
+
             if self.state == "menu":
                 self.menu.update(mouse_pos)
                 result = self.menu.handle_click(e)
@@ -50,6 +56,8 @@ class Game:
     def update(self):
         if self.state == "game":
             self.player.update(pygame.key.get_pressed())
+
+#definice settings okna
 
     def draw(self):
         if self.state == "menu":

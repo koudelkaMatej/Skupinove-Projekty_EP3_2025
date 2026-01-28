@@ -2,6 +2,8 @@ import pygame
 from objects.button import Button
 from assets.colors import *
 
+#definice menu s tlačítky
+
 class Menu:
     def __init__(self, screen_width, screen_height):
         self.screen_width = screen_width
@@ -17,9 +19,13 @@ class Menu:
         
         self.buttons = [self.start_button, self.settings_button, self.exit_button]
 
+    #definice aktualizace menu
+
     def update(self, mouse_pos):
         for button in self.buttons:
             button.update(mouse_pos)
+
+    #definice vykreslení menu
 
     def draw(self, screen):
         screen.fill(MENU_BG)
@@ -29,6 +35,8 @@ class Menu:
         
         for button in self.buttons:
             button.draw(screen)
+
+    #definice reakce na kliknutí v menu
 
     def handle_click(self, event):
         if self.start_button.is_clicked(event):

@@ -1,4 +1,4 @@
-#barvy použité ve hře
+#barvy použité v kodu/hře
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

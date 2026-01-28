@@ -1,3 +1,5 @@
+#importy knihoven
+
 import pygame
 import os
 import sys
@@ -5,6 +7,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from assets.settings import KEYBINDS
 from assets.colors import WHITE
+
+#nastavení hráče, jednoduchý pohyb WSAD
 
 class Player:
     def __init__(self):
