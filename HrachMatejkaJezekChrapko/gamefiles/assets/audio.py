@@ -16,4 +16,4 @@ def hraj_hudbu():
         pygame.mixer.music.play(-1)        # -1 bude hrát pořád dokola
         print("Hudba úspěšně spuštěna!")
     else:
-        print(f"Chyba: Hudba nenalezena na cestě: {cesta}")
+        print(f"Chyba: Hudba nenalezena na cestě: {cesta}") # pokus o fix
