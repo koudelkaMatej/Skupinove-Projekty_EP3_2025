@@ -7,7 +7,7 @@ from assets.settings import KEYBINDS
 from assets.colors import WHITE
 
 class Player:
-    def init(self):
+    def __init__(self):
         self.x = 500
         self.y = 350
         self.speed = 5
