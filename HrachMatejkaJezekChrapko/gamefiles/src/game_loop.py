@@ -1,6 +1,6 @@
 import pygame, sys
-from constants.settings import *
-from constants.colors import *
+from assets.settings import *
+from assets.colors import *
 from objects.player import Player
 
 class Game:

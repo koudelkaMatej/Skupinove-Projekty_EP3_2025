@@ -1,6 +1,6 @@
 import pygame
-from constants.settings import KEYBINDS
-from constants.colors import WHITE
+from assets.settings import KEYBINDS
+from assets.colors import WHITE
 
 class Player:
     def __init__(self):
