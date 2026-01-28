@@ -1,9 +1,13 @@
 import pygame
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(file))))
+
 from assets.settings import KEYBINDS
 from assets.colors import WHITE
 
 class Player:
-    def __init__(self):
+    def init(self):
         self.x = 500
         self.y = 350
         self.speed = 5
