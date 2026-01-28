@@ -1,0 +1,1 @@
+zde bude (až se to naučíme) soubor pro uložení skore apod.
