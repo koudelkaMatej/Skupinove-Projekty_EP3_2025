@@ -10,7 +10,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("JménoHry")
+        pygame.display.set_caption("Unnamed Dungeon")
         self.clock = pygame.time.Clock()
         self.state = "menu"
         self.player = Player()
@@ -40,7 +40,7 @@ class Game:
         if self.state == "menu":
             self.screen.fill(MENU_BG)
             font = pygame.font.Font(None, 72)
-            title = font.render("JménoHry", True, TITLE)
+            title = font.render("Unnamed Dungeon", True, TITLE)
             self.screen.blit(title, title.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2)))
         else:
             self.screen.fill(BLACK)
