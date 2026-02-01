@@ -14,3 +14,6 @@ WHITE = (255, 255, 255)
 GRAY = (200, 200, 200)
 BLUE = (100, 149, 237)
 GREEN = (0, 200, 0)
+
+win = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Memory Puzzle Game")
