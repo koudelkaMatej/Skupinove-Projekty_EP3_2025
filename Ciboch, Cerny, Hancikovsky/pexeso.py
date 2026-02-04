@@ -1,3 +1,6 @@
+# Autor: Ciboch, Černý, Hančikovský
+# Popis: Jednoduchá hra Pexeso vytvořená v knihovně Pygame
+
 import pygame
 import random
 import time
@@ -28,6 +31,7 @@ font = pygame.font.SysFont("arial", 36)
 first = None
 matches = 0
 
+# Funkce pro vykreslení herní plochy
 def draw_board():
     win.fill(GRAY)
     for row in range(ROWS):
@@ -48,7 +52,7 @@ def get_clicked_tile(pos):
     return row, col
 
 running = True
-while running:
+while running: # Hlavní herní smyčka
     draw_board()
 
     for event in pygame.event.get():
@@ -71,7 +75,7 @@ while running:
                     else:
                         matches += 1
                     first = None
-                    
+
     if matches == (ROWS * COLS) // 2:
         win.fill(GRAY)
         win.blit(font.render("You Win!", True, WHITE), (WIDTH // 2 - 80, HEIGHT // 2 - 30))
