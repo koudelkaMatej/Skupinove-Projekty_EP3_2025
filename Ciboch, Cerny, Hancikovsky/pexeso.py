@@ -30,8 +30,8 @@ def load_button(path, size):
 
 BUTTON_SIZE = (300, 120)
 
-StartImg = load_button("StartButton.png", BUTTON_SIZE)
-QuitImg = load_button("QuitButton.png", BUTTON_SIZE)
+StartImg = load_button("assets/StartButton.png", BUTTON_SIZE)
+QuitImg = load_button("assets/QuitButton.png", BUTTON_SIZE)
 
 class Buttons:
     # Třída pro vytvoření klikatelného tlačítka
