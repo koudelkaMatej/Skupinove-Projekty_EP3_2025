@@ -71,3 +71,12 @@ while running:
                     else:
                         matches += 1
                     first = None
+                    
+    if matches == (ROWS * COLS) // 2:
+        win.fill(GRAY)
+        win.blit(font.render("You Win!", True, WHITE), (WIDTH // 2 - 80, HEIGHT // 2 - 30))
+        pygame.display.update()
+        pygame.time.delay(2000)
+        running = False
+
+pygame.quit()
