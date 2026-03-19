@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from assets.settings import KEYBINDS
 from assets.colors import WHITE
+from assets.audio import play_fight_music, play_menu_music, stop_music
 
 #nastavení hráče, jednoduchý pohyb WSAD
 
@@ -26,20 +27,21 @@ class Player:
             self.x -= self.speed
         if keys[KEYBINDS["right"]]:
             self.x += self.speed
+            
 
 # --- OMEZENÍ POHYBU (Hranice obrazovky) ---
         
-        # Šířka okna je 1000
+       
         if self.x - self.radius < 0:
             self.x = self.radius
         elif self.x + self.radius > 1000:
             self.x = 1000 - self.radius
 
-        # Výška okna je 800
+        
         if self.y - self.radius < 0:
             self.y = self.radius
-        elif self.y + self.radius > 800:
-            self.y = 800 - self.radius
+        elif self.y + self.radius > 700:
+            self.y = 700 - self.radius
 
     def draw(self, screen):
         pygame.draw.circle(screen, WHITE, (self.x, self.y), self.radius)

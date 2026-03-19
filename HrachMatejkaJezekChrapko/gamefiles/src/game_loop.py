@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from assets.settings import *
 from assets.colors import *
+from assets.audio import play_menu_music, play_fight_music
 from objects.player import Player
 from objects.menu import Menu
 
@@ -21,6 +22,9 @@ class Game:
         self.player = Player()
         self.menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
 
+        # Startovní hudba pro menu.
+        play_menu_music()
+
     def run(self):
         while True:
             self.clock.tick(FPS)
@@ -30,28 +34,32 @@ class Game:
 
     def handle_events(self):
         mouse_pos = pygame.mouse.get_pos()
-        
+        #e = klik pokud kliknu na x tak se zavre
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
                 #nastavení tlačítek menu.
-
+#pokud jsem v menu tak hraje hudba menu a sleduju kliky ktere udelaju stav z menu game
             if self.state == "menu":
                 self.menu.update(mouse_pos)
                 result = self.menu.handle_click(e)
                 if result == "game":
                     self.state = "game"
+                    #pokud klik = game zacne hrat game hudba
+                    play_fight_music()
                 elif result == "settings":
                     self.state = "settings"
+                    # Hudba zůstává stejná jako v menu.
                 elif result == "exit":
                     pygame.quit()
                     sys.exit()
-
+#kdy ja zmacku esc tak se vratim do menu
             if self.state == "game" and e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     self.state = "menu"
+                    play_menu_music()
 
     def update(self):
         if self.state == "game":
