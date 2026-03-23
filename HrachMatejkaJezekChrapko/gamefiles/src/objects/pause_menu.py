@@ -6,6 +6,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from assets.colors import *
 from objects.button import Button
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+GRAFIKA = os.path.normpath(os.path.join(_HERE, "..", "..", "assets", "images", "Grafika"))
+
 # Pause menu zobrazené přes hru
 
 class PauseMenu:
@@ -13,14 +16,16 @@ class PauseMenu:
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-        button_width = 200
-        button_height = 60
-        button_x = (screen_width - button_width) // 2
-        center_y = screen_height // 2
+        button_width = 350
+        button_height = 82
+        gap = 40
+        total_w = 3 * button_width + 2 * gap
+        bx = (screen_width - total_w) // 2
+        by = screen_height - button_height - 80
 
-        self.resume_button   = Button(button_x, center_y - 80, button_width, button_height, "RESUME",   DARK_GRAY, WHITE)
-        self.settings_button = Button(button_x, center_y,      button_width, button_height, "SETTINGS", DARK_GRAY, WHITE)
-        self.exit_button     = Button(button_x, center_y + 80, button_width, button_height, "EXIT",     DARK_GRAY, WHITE)
+        self.resume_button   = Button(bx,                        by, button_width, button_height, "", DARK_GRAY, WHITE, image_path=os.path.join(GRAFIKA, "RESUMEbutton.png"))
+        self.settings_button = Button(bx + (button_width+gap),   by, button_width, button_height, "", DARK_GRAY, WHITE, image_path=os.path.join(GRAFIKA, "Settings.png"))
+        self.exit_button     = Button(bx + 2*(button_width+gap), by, button_width, button_height, "", DARK_GRAY, WHITE, image_path=os.path.join(GRAFIKA, "EXITbutton.png"))
 
         self.buttons = [self.resume_button, self.settings_button, self.exit_button]
         self.font_title = pygame.font.Font(None, 72)
@@ -46,7 +51,7 @@ class PauseMenu:
 
         # Nadpis
         title_surf = self.font_title.render("PAUSED", True, TITLE)
-        screen.blit(title_surf, title_surf.get_rect(center=(self.screen_width // 2, self.screen_height // 2 - 170)))
+        screen.blit(title_surf, title_surf.get_rect(center=(self.screen_width // 2, self.screen_height // 2 - 280)))
 
         for button in self.buttons:
             button.draw(screen)
