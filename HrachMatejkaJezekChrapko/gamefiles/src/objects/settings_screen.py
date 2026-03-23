@@ -4,6 +4,9 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from assets.colors import *
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_GRAFIKA = os.path.normpath(os.path.join(_HERE, "..", "..", "assets", "images", "Grafika"))
 from assets.audio import (
     get_master_volume, get_music_volume, get_effects_volume,
     set_master_volume, set_music_volume, set_effects_volume
@@ -125,7 +128,9 @@ class SettingsScreen:
         return None
 
     def draw(self, screen):
-        screen.fill(MENU_BG)
+        overlay = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 160))
+        screen.blit(overlay, (0, 0))
 
         # Nadpis
         title_surf = self.font_title.render("SETTINGS", True, TITLE)

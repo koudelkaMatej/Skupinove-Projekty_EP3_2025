@@ -129,6 +129,11 @@ class Game:
         if self.state == "menu":
             self.menu.draw(self.screen)
         elif self.state == "settings":
+            if self._settings_origin == "menu":
+                self.menu.draw(self.screen)
+            else:
+                self.screen.blit(self.bg_game, (0, 0))
+                self.player.draw(self.screen)
             self.settings_screen.draw(self.screen)
         elif self.state == "pause":
             self.screen.blit(self.bg_game, (0, 0))
