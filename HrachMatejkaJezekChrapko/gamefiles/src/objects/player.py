@@ -34,14 +34,14 @@ class Player:
        
         if self.x - self.radius < 0:
             self.x = self.radius
-        elif self.x + self.radius > 1000:
-            self.x = 1000 - self.radius
+        elif self.x + self.radius > 1920:
+            self.x = 1920 - self.radius
 
         
         if self.y - self.radius < 0:
             self.y = self.radius
-        elif self.y + self.radius > 700:
-            self.y = 700 - self.radius
+        elif self.y + self.radius > 1080:
+            self.y = 1080 - self.radius
 
     def draw(self, screen):
         pygame.draw.circle(screen, WHITE, (self.x, self.y), self.radius)

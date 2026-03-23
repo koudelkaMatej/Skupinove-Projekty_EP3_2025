@@ -2,8 +2,8 @@ import pygame
 
 # Nastavení loopu/okna
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 700
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
 FPS = 60
 
 
