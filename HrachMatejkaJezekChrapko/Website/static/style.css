@@ -46,6 +46,12 @@ a:hover {
   font-weight: bold;
 }
 
+#kontaktynadpis {
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 nav a {
   color: #d4d4d4;
   margin: 0 2px;
