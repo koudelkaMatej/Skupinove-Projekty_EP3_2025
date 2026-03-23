@@ -1,17 +1,21 @@
 import pygame
 import random
 import math
- 
+import os
+
+_HERE    = os.path.dirname(os.path.abspath(__file__))
+_GRAFIKA = os.path.normpath(os.path.join(_HERE, "..", "..", "assets", "images", "Grafika"))
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-CENTER_SIZE      = 80
-SHIELD_LENGTH    = 130
+CENTER_SIZE      = 120
+SHIELD_LENGTH    = 150
 SHIELD_THICKNESS = 18
 SHIELD_GAP       = 10
 
-VIRUS_RADIUS      = 18
+VIRUS_RADIUS      = 30
 BASE_SPEED        = 4.0
 SPEED_INCREMENT   = 0.25
 
@@ -27,9 +31,10 @@ class Shield:
     COLOR_IDLE   = (80, 180, 255)
     COLOR_BORDER = (255, 255, 255)
 
-    def __init__(self, center_x, center_y):
-        self.cx = center_x
-        self.cy = center_y
+    def __init__(self, center_x, center_y, img=None):
+        self.cx  = center_x
+        self.cy  = center_y
+        self.img = img          # scaled base image (horizontal)
         self.direction = "up"
 
     def handle_input(self, keys):
@@ -72,8 +77,15 @@ class Shield:
 
     def draw(self, screen):
         rect = self.get_rect()
-        pygame.draw.rect(screen, self.COLOR_IDLE,   rect, border_radius=6)
-        pygame.draw.rect(screen, self.COLOR_BORDER, rect, 2, border_radius=6)
+        if self.img is not None:
+            # Rotace podle směru (base image je horizontální)
+            angle = {"up": 0, "down": 180, "left": 90, "right": -90}[self.direction]
+            rotated = pygame.transform.rotate(self.img, angle)
+            scaled  = pygame.transform.scale(rotated, (rect.width, rect.height))
+            screen.blit(scaled, rect.topleft)
+        else:
+            pygame.draw.rect(screen, self.COLOR_IDLE,   rect, border_radius=6)
+            pygame.draw.rect(screen, self.COLOR_BORDER, rect, 2, border_radius=6)
 
 
 # ---------------------------------------------------------------------------
@@ -84,8 +96,9 @@ class Virus:
     COLOR      = (220, 50, 50)
     COLOR_DARK = (140, 20, 20)
 
-    def __init__(self, screen_width, screen_height, speed):
-        self.r = VIRUS_RADIUS
+    def __init__(self, screen_width, screen_height, speed, img=None):
+        self.r   = VIRUS_RADIUS
+        self.img = img
         cx = screen_width  // 2
         cy = screen_height // 2
 
@@ -115,18 +128,21 @@ class Virus:
         )
 
     def draw(self, screen):
-        ix, iy = int(self.x), int(self.y)
-        pygame.draw.circle(screen, self.COLOR,      (ix, iy), self.r)
-        pygame.draw.circle(screen, self.COLOR_DARK, (ix, iy), self.r, 3)
-        for angle_deg in range(0, 360, 60):
-            rad = math.radians(angle_deg)
-            tip_x = ix + int((self.r + 8) * math.cos(rad))
-            tip_y = iy + int((self.r + 8) * math.sin(rad))
-            pygame.draw.line(screen, self.COLOR_DARK, (ix, iy), (tip_x, tip_y), 2)
+        if self.img is not None:
+            screen.blit(self.img, self.get_rect().topleft)
+        else:
+            ix, iy = int(self.x), int(self.y)
+            pygame.draw.circle(screen, self.COLOR,      (ix, iy), self.r)
+            pygame.draw.circle(screen, self.COLOR_DARK, (ix, iy), self.r, 3)
+            for angle_deg in range(0, 360, 60):
+                rad   = math.radians(angle_deg)
+                tip_x = ix + int((self.r + 8) * math.cos(rad))
+                tip_y = iy + int((self.r + 8) * math.sin(rad))
+                pygame.draw.line(screen, self.COLOR_DARK, (ix, iy), (tip_x, tip_y), 2)
 
 
 # ---------------------------------------------------------------------------
-# Button (self-contained, žádné závislosti)
+# Button (self-contained)
 # ---------------------------------------------------------------------------
 
 class _Button:
@@ -152,7 +168,7 @@ class _Button:
 
 
 # ---------------------------------------------------------------------------
-# GameplayState  –  tuto třídu používá game_loop.py
+# GameplayState
 # ---------------------------------------------------------------------------
 
 class GameplayState:
@@ -162,6 +178,18 @@ class GameplayState:
         self.sh = screen_height
         self.cx = screen_width  // 2
         self.cy = screen_height // 2
+
+        # --- načtení obrázků ---
+        def _load(name, size):
+            path = os.path.join(_GRAFIKA, name)
+            img  = pygame.image.load(path).convert_alpha()
+            return pygame.transform.scale(img, size)
+
+        self.img_center  = _load("slozka (1).png", (CENTER_SIZE, CENTER_SIZE))
+        self.img_shield  = _load("stit (1).png",   (SHIELD_LENGTH, SHIELD_THICKNESS))
+        self.img_virus1  = _load("Virus1.png",      (VIRUS_RADIUS * 2, VIRUS_RADIUS * 2))
+        self.img_virus2  = _load("virus2.png",      (VIRUS_RADIUS * 2, VIRUS_RADIUS * 2))
+        self._virus_imgs = [self.img_virus1, self.img_virus2]
 
         self.shield = Shield(self.cx, self.cy)
         self.center_rect = pygame.Rect(
@@ -176,12 +204,12 @@ class GameplayState:
         btn_font         = pygame.font.Font(None, 48)
 
         btn_w, btn_h = 320, 72
-        gap = 30
+        gap     = 30
         total_w = btn_w * 2 + gap
         bx = self.cx - total_w // 2
         by = self.cy + 120
 
-        self.btn_again = _Button(pygame.Rect(bx,              by, btn_w, btn_h), "PLAY AGAIN", btn_font)
+        self.btn_again = _Button(pygame.Rect(bx,               by, btn_w, btn_h), "PLAY AGAIN", btn_font)
         self.btn_menu  = _Button(pygame.Rect(bx + btn_w + gap, by, btn_w, btn_h), "MENU",       btn_font)
 
         self._reset()
@@ -203,7 +231,6 @@ class GameplayState:
         return BASE_SPEED + self.score * SPEED_INCREMENT
 
     def handle_event(self, event):
-        """Vrátí 'menu' když hráč chce zpět do menu."""
         if self.game_over:
             if self.btn_again.is_clicked(event):
                 self._reset()
@@ -221,7 +248,8 @@ class GameplayState:
         self.spawn_timer += 1
         if self.spawn_timer >= self._spawn_interval():
             self.spawn_timer = 0
-            self.viruses.append(Virus(self.sw, self.sh, self._virus_speed()))
+            img = random.choice(self._virus_imgs)
+            self.viruses.append(Virus(self.sw, self.sh, self._virus_speed(), img))
 
         shield_rect = self.shield.get_rect()
         alive = []
@@ -246,9 +274,8 @@ class GameplayState:
             self._draw_game_over(screen)
             return
 
-        # Střed – placeholder složka
-        pygame.draw.rect(screen, (255, 210, 40), self.center_rect, border_radius=10)
-        pygame.draw.rect(screen, (180, 140,  0), self.center_rect, 3, border_radius=10)
+        # Střed – složka
+        screen.blit(self.img_center, self.center_rect.topleft)
 
         self.shield.draw(screen)
 

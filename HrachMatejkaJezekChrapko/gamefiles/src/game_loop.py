@@ -113,21 +113,21 @@ class Game:
                     self.state = self._settings_origin
                 if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
                     self.state = self._settings_origin
-                if self.state == "game":
-                    result = self.gameplay.handle_event(e)
-                    if result == "menu":
-                        self.state = "menu"
-                        play_menu_music()
+
 #kdy zmacku esc ve hre, zobrazí se pause menu
             if self.state == "game" and e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
                     self.state = "pause"
 
+            if self.state == "game":
+                result = self.gameplay.handle_event(e)
+                if result == "menu":
+                    self.state = "menu"
+                    play_menu_music()
+
     def update(self):
         if self.state == "game":
             self.gameplay.update(pygame.key.get_pressed())
-        else:
-            self.gameplay.draw(self.screen, self.bg_game)
 
 #definice settings okna
 
@@ -139,14 +139,11 @@ class Game:
                 self.menu.draw(self.screen)
             else:
                 self.screen.blit(self.bg_game, (0, 0))
-                self.player.draw(self.screen)
             self.settings_screen.draw(self.screen)
         elif self.state == "pause":
             self.screen.blit(self.bg_game, (0, 0))
-            self.player.draw(self.screen)
             self.pause_menu.draw(self.screen)
         else:
-            self.screen.blit(self.bg_game, (0, 0))
-            self.player.draw(self.screen)
+            self.gameplay.draw(self.screen, self.bg_game)
 
         pygame.display.flip()
