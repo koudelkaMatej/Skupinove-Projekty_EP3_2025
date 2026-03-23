@@ -28,7 +28,9 @@ class PauseMenu:
         self.exit_button     = Button(bx + 2*(button_width+gap), by, button_width, button_height, "", DARK_GRAY, WHITE, image_path=os.path.join(GRAFIKA, "EXITbutton.png"))
 
         self.buttons = [self.resume_button, self.settings_button, self.exit_button]
-        self.font_title = pygame.font.Font(None, 72)
+
+        paused_raw = pygame.image.load(os.path.join(GRAFIKA, "Paused_txt.png")).convert_alpha()
+        self.img_paused = pygame.transform.scale(paused_raw, (600, 140))
 
     def update(self, mouse_pos):
         for button in self.buttons:
@@ -49,9 +51,8 @@ class PauseMenu:
         overlay.fill((0, 0, 0, 160))
         screen.blit(overlay, (0, 0))
 
-        # Nadpis
-        title_surf = self.font_title.render("PAUSED", True, TITLE)
-        screen.blit(title_surf, title_surf.get_rect(center=(self.screen_width // 2, self.screen_height // 2 - 280)))
+        # Nadpis – textura
+        screen.blit(self.img_paused, self.img_paused.get_rect(center=(self.screen_width // 2, self.screen_height // 2 - 280)))
 
         for button in self.buttons:
             button.draw(screen)

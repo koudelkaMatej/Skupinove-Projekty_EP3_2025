@@ -114,7 +114,8 @@ class SettingsScreen:
             "X", DARK_GRAY, WHITE, font_size=40
         )
 
-        self.font_title = pygame.font.Font(None, 72)
+        settings_raw = pygame.image.load(os.path.join(_GRAFIKA, "Settings.png")).convert_alpha()
+        self.img_title = pygame.transform.scale(settings_raw, (600, 140))
 
     def handle_event(self, event):
         mouse_pos = pygame.mouse.get_pos()
@@ -132,9 +133,8 @@ class SettingsScreen:
         overlay.fill((0, 0, 0, 160))
         screen.blit(overlay, (0, 0))
 
-        # Nadpis
-        title_surf = self.font_title.render("SETTINGS", True, TITLE)
-        screen.blit(title_surf, title_surf.get_rect(center=(self.screen_width // 2, 80)))
+        # Nadpis – textura
+        screen.blit(self.img_title, self.img_title.get_rect(center=(self.screen_width // 2, 80)))
 
         # Slidery
         for slider in self.sliders:

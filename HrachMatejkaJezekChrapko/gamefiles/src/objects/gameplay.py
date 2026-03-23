@@ -198,19 +198,18 @@ class GameplayState:
             CENTER_SIZE, CENTER_SIZE
         )
 
-        self.font_huge   = pygame.font.Font(None, 140)
-        self.font_large  = pygame.font.Font(None, 80)
-        self.font_medium = pygame.font.Font(None, 52)
-        btn_font         = pygame.font.Font(None, 48)
+        _font_path = os.path.join(_GRAFIKA, "deltarune.ttf")
+        self.font_huge   = pygame.font.Font(_font_path, 120)
+        self.font_large  = pygame.font.Font(_font_path, 72)
+        self.font_medium = pygame.font.Font(_font_path, 42)
 
-        btn_w, btn_h = 320, 72
-        gap     = 30
-        total_w = btn_w * 2 + gap
-        bx = self.cx - total_w // 2
-        by = self.cy + 120
-
-        self.btn_again = _Button(pygame.Rect(bx,               by, btn_w, btn_h), "PLAY AGAIN", btn_font)
-        self.btn_menu  = _Button(pygame.Rect(bx + btn_w + gap, by, btn_w, btn_h), "MENU",       btn_font)
+        exit_btn_w, exit_btn_h = 400, 93
+        self.img_exit  = _load("EXITbutton.png", (exit_btn_w, exit_btn_h))
+        self.exit_rect = pygame.Rect(
+            self.cx - exit_btn_w // 2,
+            self.cy + 100,
+            exit_btn_w, exit_btn_h
+        )
 
         self._reset()
 
@@ -232,9 +231,8 @@ class GameplayState:
 
     def handle_event(self, event):
         if self.game_over:
-            if self.btn_again.is_clicked(event):
-                self._reset()
-            elif self.btn_menu.is_clicked(event):
+            if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
+                    and self.exit_rect.collidepoint(event.pos)):
                 self._reset()
                 return "menu"
         return None
@@ -296,5 +294,4 @@ class GameplayState:
         sc = self.font_large.render(f"Score: {self.score}", True, (255, 255, 255))
         screen.blit(sc, sc.get_rect(center=(self.cx, self.cy - 60)))
 
-        self.btn_again.draw(screen)
-        self.btn_menu.draw(screen)
+        screen.blit(self.img_exit, self.exit_rect.topleft)
