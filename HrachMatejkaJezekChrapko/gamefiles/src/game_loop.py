@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from assets.settings import *
 from assets.colors import *
 from assets.audio import play_menu_music, play_fight_music
-from objects.player import Player
+from objects.gameplay import GameplayState
 from objects.menu import Menu
 from objects.settings_screen import SettingsScreen
 from objects.pause_menu import PauseMenu
@@ -27,7 +27,7 @@ class Game:
         pygame.display.set_caption("Unnamed Dungeon")
         self.clock = pygame.time.Clock()
         self.state = "menu"
-        self.player = Player()
+        self.gameplay = GameplayState(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.settings_screen = SettingsScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.pause_menu = PauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -113,7 +113,11 @@ class Game:
                     self.state = self._settings_origin
                 if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
                     self.state = self._settings_origin
-
+                if self.state == "game":
+                    result = self.gameplay.handle_event(e)
+                    if result == "menu":
+                        self.state = "menu"
+                        play_menu_music()
 #kdy zmacku esc ve hre, zobrazí se pause menu
             if self.state == "game" and e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_ESCAPE:
@@ -121,7 +125,9 @@ class Game:
 
     def update(self):
         if self.state == "game":
-            self.player.update(pygame.key.get_pressed())
+            self.gameplay.update(pygame.key.get_pressed())
+        else:
+            self.gameplay.draw(self.screen, self.bg_game)
 
 #definice settings okna
 
