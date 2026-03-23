@@ -16,9 +16,10 @@ class Menu:
         
         self.start_button = Button(button_x, 250, button_width, button_height, "START", DARK_GRAY, WHITE)
         self.settings_button = Button(button_x, 330, button_width, button_height, "SETTINGS", DARK_GRAY, WHITE)
-        self.exit_button = Button(button_x, 410, button_width, button_height, "EXIT", DARK_GRAY, WHITE)
-        
-        self.buttons = [self.start_button, self.settings_button, self.exit_button]
+        self.web_button = Button(button_x, 410, button_width, button_height, "WEB", DARK_GRAY, WHITE)
+        self.exit_button = Button(button_x, 490, button_width, button_height, "EXIT", DARK_GRAY, WHITE)
+
+        self.buttons = [self.start_button, self.settings_button, self.web_button, self.exit_button]
 
     #definice aktualizace menu
 
@@ -44,6 +45,8 @@ class Menu:
             return "game"
         elif self.settings_button.is_clicked(event):
             return "settings"
+        elif self.web_button.is_clicked(event):
+            return "web"
         elif self.exit_button.is_clicked(event):
             return "exit"
         return None

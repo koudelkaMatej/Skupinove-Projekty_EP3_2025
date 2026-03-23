@@ -6,14 +6,20 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 #default nastaveni
-_DEFAULT_VOLUME = 0.3
+_master_volume = 0.3
+_music_volume = 1.0
+_effects_volume = 1.0
 _current_track = None
 
+def _apply_music_volume():
+    if pygame.mixer.get_init():
+        pygame.mixer.music.set_volume(_master_volume * _music_volume)
+
 #vytvori mixer a nastavi hlasitost
-def _init_mixer(volume: float = _DEFAULT_VOLUME):
+def _init_mixer():
     if not pygame.mixer.get_init():
         pygame.mixer.init()
-    pygame.mixer.music.set_volume(volume)
+    _apply_music_volume()
 
 #hraje hudba pokud nic nehraje
 def _play_track(filename: str, loops: int = -1):
@@ -58,3 +64,27 @@ def pause_music():
     if pygame.mixer.get_init():
         pygame.mixer.music.pause()
 
+# Volume settery a gettery pro settings screen
+def set_master_volume(val: float):
+    global _master_volume
+    _master_volume = max(0.0, min(1.0, val))
+    _apply_music_volume()
+
+def set_music_volume(val: float):
+    global _music_volume
+    _music_volume = max(0.0, min(1.0, val))
+    _apply_music_volume()
+
+def set_effects_volume(val: float):
+    global _effects_volume
+    _effects_volume = max(0.0, min(1.0, val))
+    # Použije se až budou zvukové efekty implementovány
+
+def get_master_volume() -> float:
+    return _master_volume
+
+def get_music_volume() -> float:
+    return _music_volume
+
+def get_effects_volume() -> float:
+    return _effects_volume
