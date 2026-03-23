@@ -6,9 +6,9 @@ import os
 _HERE    = os.path.dirname(os.path.abspath(__file__))
 _GRAFIKA = os.path.normpath(os.path.join(_HERE, "..", "..", "assets", "images", "Grafika"))
 
-# ---------------------------------------------------------------------------
-# Constants
-# ---------------------------------------------------------------------------
+
+# Proměnné pro hru
+
 
 CENTER_SIZE      = 120
 SHIELD_LENGTH    = 150
@@ -23,9 +23,9 @@ BASE_SPAWN_FRAMES = 90
 MIN_SPAWN_FRAMES  = 18
 
 
-# ---------------------------------------------------------------------------
-# Shield
-# ---------------------------------------------------------------------------
+
+# Štít – zpracovává vstup, pozici a vykreslování štítu
+
 
 class Shield:
     COLOR_IDLE   = (80, 180, 255)
@@ -34,7 +34,7 @@ class Shield:
     def __init__(self, center_x, center_y, img=None):
         self.cx  = center_x
         self.cy  = center_y
-        self.img = img          # scaled base image (horizontal)
+        self.img = img          
         self.direction = "up"
 
     def handle_input(self, keys):
@@ -88,9 +88,9 @@ class Shield:
             pygame.draw.rect(screen, self.COLOR_BORDER, rect, 2, border_radius=6)
 
 
-# ---------------------------------------------------------------------------
-# Virus
-# ---------------------------------------------------------------------------
+ 
+# Virus – zpracovává pozici, pohyb a vykreslování virů, které se objevují ze stran a míří ke středu
+
 
 class Virus:
     COLOR      = (220, 50, 50)
@@ -141,9 +141,9 @@ class Virus:
                 pygame.draw.line(screen, self.COLOR_DARK, (ix, iy), (tip_x, tip_y), 2)
 
 
-# ---------------------------------------------------------------------------
-# Button (self-contained)
-# ---------------------------------------------------------------------------
+
+# Tlačítko pro menu a pause – zpracovává vykreslování a klikání na tlačítko
+
 
 class _Button:
     def __init__(self, rect, label, font):
@@ -167,9 +167,9 @@ class _Button:
         )
 
 
-# ---------------------------------------------------------------------------
-# GameplayState
-# ---------------------------------------------------------------------------
+
+# Herní stav – zpracovává logiku a vykreslování samotné hry, včetně správy štítu, virů, skóre a stavu hry (běží/končí)
+
 
 class GameplayState:
 
@@ -179,7 +179,7 @@ class GameplayState:
         self.cx = screen_width  // 2
         self.cy = screen_height // 2
 
-        # --- načtení obrázků ---
+        # načtení obrázků a vytvoření objektů pro štít a tlačítka
         def _load(name, size):
             path = os.path.join(_GRAFIKA, name)
             img  = pygame.image.load(path).convert_alpha()
@@ -191,15 +191,6 @@ class GameplayState:
         self.img_virus2  = _load("virus2.png",      (VIRUS_RADIUS * 2, VIRUS_RADIUS * 2))
         self._virus_imgs = [self.img_virus1, self.img_virus2]
 
-        # EXIT tlačítko s texturou
-        exit_btn_w, exit_btn_h = 400, 93
-        self.img_exit    = _load("EXITbutton.png", (exit_btn_w, exit_btn_h))
-        self.exit_rect   = pygame.Rect(
-            self.cx - exit_btn_w // 2,
-            self.cy + 100,
-            exit_btn_w, exit_btn_h
-        )
-
         self.shield = Shield(self.cx, self.cy)
         self.center_rect = pygame.Rect(
             self.cx - CENTER_SIZE // 2,
@@ -207,10 +198,19 @@ class GameplayState:
             CENTER_SIZE, CENTER_SIZE
         )
 
-        _font_path = os.path.join(_GRAFIKA, "deltarune.ttf")
-        self.font_huge   = pygame.font.Font(_font_path, 120)
-        self.font_large  = pygame.font.Font(_font_path, 72)
-        self.font_medium = pygame.font.Font(_font_path, 42)
+        self.font_huge   = pygame.font.Font(None, 140)
+        self.font_large  = pygame.font.Font(None, 80)
+        self.font_medium = pygame.font.Font(None, 52)
+        btn_font         = pygame.font.Font(None, 48)
+
+        btn_w, btn_h = 320, 72
+        gap     = 30
+        total_w = btn_w * 2 + gap
+        bx = self.cx - total_w // 2
+        by = self.cy + 120
+
+        self.btn_again = _Button(pygame.Rect(bx,               by, btn_w, btn_h), "PLAY AGAIN", btn_font)
+        self.btn_menu  = _Button(pygame.Rect(bx + btn_w + gap, by, btn_w, btn_h), "MENU",       btn_font)
 
         self._reset()
 
@@ -232,8 +232,9 @@ class GameplayState:
 
     def handle_event(self, event):
         if self.game_over:
-            if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1
-                    and self.exit_rect.collidepoint(event.pos)):
+            if self.btn_again.is_clicked(event):
+                self._reset()
+            elif self.btn_menu.is_clicked(event):
                 self._reset()
                 return "menu"
         return None
@@ -295,5 +296,5 @@ class GameplayState:
         sc = self.font_large.render(f"Score: {self.score}", True, (255, 255, 255))
         screen.blit(sc, sc.get_rect(center=(self.cx, self.cy - 60)))
 
-        # EXIT tlačítko s texturou
-        screen.blit(self.img_exit, self.exit_rect.topleft)
+        self.btn_again.draw(screen)
+        self.btn_menu.draw(screen)
