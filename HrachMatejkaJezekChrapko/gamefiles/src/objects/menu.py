@@ -17,6 +17,9 @@ class Menu:
         bg_raw = pygame.image.load(os.path.join(GRAFIKA, "Background.png")).convert()
         self.background = pygame.transform.scale(bg_raw, (screen_width, screen_height))
 
+        name_raw = pygame.image.load(os.path.join(GRAFIKA, "Main_name.png")).convert_alpha()
+        self.name_img = pygame.transform.scale(name_raw, (screen_width, screen_height))
+
         button_width = 350
         button_height = 82
         gap = 40
@@ -41,9 +44,7 @@ class Menu:
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
-        font = pygame.font.Font(None, 72)
-        title = font.render("Unnamed Dungeon", True, TITLE)
-        screen.blit(title, title.get_rect(center=(self.screen_width//2, 80)))
+        screen.blit(self.name_img, (0, 0))
         
         for button in self.buttons:
             button.draw(screen)

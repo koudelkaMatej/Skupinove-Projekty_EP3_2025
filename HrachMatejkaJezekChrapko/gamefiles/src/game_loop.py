@@ -15,6 +15,9 @@ from objects.menu import Menu
 from objects.settings_screen import SettingsScreen
 from objects.pause_menu import PauseMenu
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_GRAFIKA = os.path.normpath(os.path.join(_HERE, "..", "assets", "images", "Grafika"))
+
 #celkové nastavení herní smyčky
 
 class Game:
@@ -30,6 +33,9 @@ class Game:
         self.pause_menu = PauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT)
         self._settings_origin = "menu"
         self._web_process = None
+
+        bg_raw = pygame.image.load(os.path.join(_GRAFIKA, "BG_game.png")).convert()
+        self.bg_game = pygame.transform.scale(bg_raw, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Cesta k Flask serveru (Website/Run.py je o složku výš než gamefiles)
         self._web_path = os.path.join(
@@ -125,12 +131,11 @@ class Game:
         elif self.state == "settings":
             self.settings_screen.draw(self.screen)
         elif self.state == "pause":
-            # nejdříve vykreslí hru, pak pause overlay přes ni
-            self.screen.fill(BLACK)
+            self.screen.blit(self.bg_game, (0, 0))
             self.player.draw(self.screen)
             self.pause_menu.draw(self.screen)
         else:
-            self.screen.fill(BLACK)
+            self.screen.blit(self.bg_game, (0, 0))
             self.player.draw(self.screen)
 
         pygame.display.flip()
