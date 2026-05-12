@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from assets.settings import *
 from assets.colors import *
-from assets.audio import play_menu_music, play_fight_music
+from assets.audio import play_menu_music, play_fight_music, play_game_over_music
 from objects.gameplay import GameplayState
 from objects.menu import Menu
 from objects.settings_screen import SettingsScreen
@@ -42,6 +42,8 @@ class Game:
             os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
             "Website", "Run.py"
         )
+
+        self._game_over_music_played = False
 
         # Startovní hudba pro menu.
         play_menu_music()
@@ -84,6 +86,8 @@ class Game:
                 result = self.menu.handle_click(e)
                 if result == "game":
                     self.state = "game"
+                    self._game_over_music_played = False
+                    self.gameplay.reset()
                     play_fight_music()
                 elif result == "settings":
                     self._settings_origin = "menu"
@@ -128,6 +132,9 @@ class Game:
     def update(self):
         if self.state == "game":
             self.gameplay.update(pygame.key.get_pressed())
+            if self.gameplay.game_over and not self._game_over_music_played:
+                play_game_over_music()
+                self._game_over_music_played = True
 
 #definice settings okna
 
