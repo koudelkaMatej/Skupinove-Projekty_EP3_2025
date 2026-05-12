@@ -63,12 +63,26 @@ class Game:
 
     def _start_web_server(self):
         """Spusti Flask server na pozadi (jednou pri startu hry)."""
+        if not os.path.exists(self._web_path):
+            print(f"[WEB] CHYBA: Run.py nenalezen: {self._web_path}")
+            return
+
+        pripojeni_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+            "pripojeni.py"
+        )
+        if not os.path.exists(pripojeni_path):
+            print("[WEB] CHYBA: pripojeni.py nenalezen!")
+            print("[WEB]   Zkopiruj pripojeni.example.py jako pripojeni.py")
+            return
+
         if self._web_process is None or self._web_process.poll() is not None:
             self._web_process = subprocess.Popen(
                 [sys.executable, self._web_path],
                 stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stderr=None   # stderr jde do terminalu -- chyby jsou viditelne
             )
+            print(f"[WEB] Flask server spusten (PID {self._web_process.pid})")
 
     def _open_web(self):
         """Tlacitko Web v menu — jen otevri prohlizec, server uz bezi."""
