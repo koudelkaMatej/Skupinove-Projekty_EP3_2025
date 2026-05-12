@@ -1,105 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Shieldbash</title>
-  <link rel="stylesheet" href="{{ url_for('static', 
-filename='style.css') }}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-  <div id="wrapper">
+{% block title %}Kontakt{% endblock %}
+{% block subtitle %}Kontakty{% endblock %}
 
-    <!-- NAVBAR -->
-    <div id="navbar">
-      <span id="site-title">ShieldBash-Contacts-</span>
-      <nav>
-        <a href="{{ url_for('home') }}">Home</a> |
-        <a href="{{ url_for('login') }}">Login</a> |
-        <a href="{{ url_for('about') }}">About Game</a> |
-        <a href="{{ url_for('contact') }}">Contact</a>
-      </nav>
-    </div>
+{% block content %}
 
-    <hr />
+  <div id="updates">
+    <h2 id="kontaktynadpis">* Kontakty *</h2>
 
-    <!-- nazev -->
-    <div id="hero">
-      <pre id="ascii-art">
-  ____  _     _      _     _ ____            _     
- / ___|| |   (_)    | |   | |  _ \          | |    
- \___ \| |__  _  ___| | __| | |_) | __ _ ___| |__  
-  ___) | '_ \| |/ _ \ |/ _` |  _ &lt; / _` / __| '_ \ 
- |____/|_| |_|_|\___|_|\__,_|_.__/ \__,_|___/_| |_|
-      </pre>
-      <p id="tagline">-- Deflect stuff with THE Shield --</p>
-      <p id="controls-note">Kontakty</p>
-    </div>
-
-    <hr />
-
-    <!-- Rozložení stránky -->
-    <div id="main">
-
-      <!-- upadty -->
-      <div id="updates">
-        <h2 id="kontaktynadpis">* Kontakty *</h2>
-
-
-        <div class="update-entry">
-          <p class="update-header">[v1!] &mdash; 23.03.2026 &nbsp;<span class="tag tag-patch">E-MAIL</span></p>
-          <p class="update-title">E-mail</p>
-          <ul>
-            <li>Jonda: matejkaj@spskladno.cz</li>
-            <li>Petr: petr@spskladno.cz</li>
-            <li>Hrach: hrach@spskladno.cz</li>
-            <li>Kuba: kuba@spskladno.cz</li>
-            <li>- pro nahlášení chyby kontaktujte kteréhokoli člena týmu</li>
-          </ul>
-        </div>
-
-      </div>
-
-      <!-- Sidebary na prave strane -->
-      <div id="sidebar">
-
-        <div class="side-box">
-          <p class="box-title">:: About - O hře ::</p>
-          <p>ShieldBash je zdrama počítačová hra. Ovládej svůj šťít a odrážej projektily. Získej co nejvyšší skore!</p>
-          <p><a href="#">Více info - About &raquo;</a></p>
-        </div>
-
-        <div class="side-box">
-          <p class="box-title">:: Jak hrát ::</p>
-          <p>
-            Přihlaš se pomocí Loginu<br />
-            Stáhni hru<br />
-            Získej co nejvyšší skore<br />
-          </p>
-          <p><a href="#">Login &raquo;</a></p>
-        </div>
-
-        <div class="side-box">
-          <p class="box-title">:: Links ::</p>
-          <p>
-            <a href="{{ url_for('login') }}">Hraj</a><br />
-            <a href="{{ url_for('about') }}">O hře</a><br />
-            <a href="{{ url_for('contact') }}">Našel jsi chybu?</a>
-          </p>
-        </div>
-
-      </div>
-    </div>
-
-    <hr />
-
-    <!-- footer -->
-    <div id="footer">
-      <p>ShieldBash &copy; 2026 &nbsp;|&nbsp; <a href="#">Home</a> | <a href="#">Login</a> | <a href="#">About</a> | <a href="#">Contact</a></p>
-      <p id="visitor">Stalk much?</p>
+    <div class="update-entry">
+      <p class="update-header">[v1!] &mdash; 23.03.2026 &nbsp;<span class="tag tag-patch">E-MAIL</span></p>
+      <p class="update-title">E-mail</p>
+      <ul>
+        <li>Jonda: matejkaj@spskladno.cz</li>
+        <li>Petr: petr@spskladno.cz</li>
+        <li>Hrach: hrach@spskladno.cz</li>
+        <li>Kuba: kuba@spskladno.cz</li>
+        <li>- pro nahlášení chyby kontaktujte kteréhokoli člena týmu</li>
+      </ul>
     </div>
 
   </div>
 
-</body>
-</html>
+  <div id="sidebar">
+
+    <div class="side-box">
+      <p class="box-title">:: O hře ::</p>
+      <p>ShieldBash je zdrama počítačová hra. Ovládej svůj štít a odrážej projektily. Získej co nejvyšší skóre!</p>
+      <p><a href="{{ url_for('about') }}">Více info &raquo;</a></p>
+    </div>
+
+    <div class="side-box">
+      <p class="box-title">:: Jak hrát ::</p>
+      <p>
+        Přihlaš se pomocí Loginu<br />
+        Spusť hru<br />
+        Získej co nejvyšší skóre<br />
+      </p>
+      <p><a href="{{ url_for('login') }}">Login &raquo;</a></p>
+    </div>
+
+    <div class="side-box">
+      <p class="box-title">:: Links ::</p>
+      <p>
+        <a href="{{ url_for('leaderboard') }}">Leaderboard</a><br />
+        <a href="{{ url_for('about') }}">O hře</a><br />
+        <a href="{{ url_for('contact') }}">Našel jsi chybu?</a>
+      </p>
+    </div>
+
+  </div>
+
+{% endblock %}

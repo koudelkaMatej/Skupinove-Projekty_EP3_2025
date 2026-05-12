@@ -46,6 +46,11 @@ a:hover {
   font-weight: bold;
 }
 
+.nav-user {
+  color: #00ff88;
+  font-weight: bold;
+}
+
 #kontaktynadpis {
   color: white;
   font-size: 16px;
@@ -214,6 +219,142 @@ nav a:hover {
 #visitor {
   margin-top: 4px;
   color: #555;
+}
+
+/* FORMS */
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  color: #ffcc00;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px 10px;
+  background: #111;
+  border: 1px solid #444;
+  color: #d4d4d4;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #ffcc00;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 20px;
+  background: #333;
+  border: 1px solid #666;
+  color: #d4d4d4;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 8px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #444;
+  border-color: #ffcc00;
+  color: #ffcc00;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: #224488;
+  border-color: #4466aa;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #335599;
+  border-color: #ffcc00;
+  color: #fff;
+}
+
+.error-msg {
+  color: #ff4444;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* LEADERBOARD */
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.lb-table th {
+  color: #ffcc00;
+  text-align: left;
+  border-bottom: 1px solid #444;
+  padding: 6px 8px;
+  font-weight: normal;
+}
+
+.lb-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #2a2a2a;
+  color: #bbb;
+}
+
+.lb-table tr:hover td {
+  color: #fff;
+}
+
+.lb-rank {
+  color: #888;
+  width: 30px;
+}
+
+.lb-main-row {
+  cursor: pointer;
+}
+
+.lb-main-row:hover td {
+  color: #ffcc00 !important;
+}
+
+.lb-expand-hint {
+  color: #666;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+.lb-detail-row td {
+  background: #111;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid #333;
+}
+
+.lb-sub-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.lb-sub-table th {
+  color: #888;
+  text-align: left;
+  padding: 4px 8px;
+  font-weight: normal;
+  border-bottom: 1px solid #333;
+}
+
+.lb-sub-table td {
+  padding: 4px 8px;
+  color: #999;
+  border-bottom: 1px solid #222;
 }
 
 /* RESPONSIVE */

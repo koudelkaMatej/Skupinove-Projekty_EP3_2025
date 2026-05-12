@@ -14,6 +14,13 @@ from objects.gameplay import GameplayState
 from objects.menu import Menu
 from objects.settings_screen import SettingsScreen
 from objects.pause_menu import PauseMenu
+from objects.login_screen import LoginScreen
+
+try:
+    import requests as _requests
+    _REQUESTS_OK = True
+except ImportError:
+    _REQUESTS_OK = False
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _GRAFIKA = os.path.normpath(os.path.join(_HERE, "..", "assets", "images", "Grafika"))
@@ -26,13 +33,15 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("ShieldBash")
         self.clock = pygame.time.Clock()
-        self.state = "menu"
+        self.state = "login"
         self.gameplay = GameplayState(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.settings_screen = SettingsScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.pause_menu = PauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.login_screen = LoginScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
         self._settings_origin = "menu"
         self._web_process = None
+        self.auth_token = None
 
         bg_raw = pygame.image.load(os.path.join(_GRAFIKA, "BG_game.png")).convert()
         self.bg_game = pygame.transform.scale(bg_raw, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -44,26 +53,46 @@ class Game:
         )
 
         self._game_over_music_played = False
+        self._score_submitted = False
+
+        # Spustit Flask server hned pri startu hry
+        self._start_web_server()
 
         # Startovní hudba pro menu.
         play_menu_music()
 
-    def _open_web(self):
-        # Pokud server ještě neběží, spusť ho
+    def _start_web_server(self):
+        """Spusti Flask server na pozadi (jednou pri startu hry)."""
         if self._web_process is None or self._web_process.poll() is not None:
             self._web_process = subprocess.Popen(
                 [sys.executable, self._web_path],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
-        # Otevři prohlížeč po 1.5s aby Flask stihl nastartovat
-        threading.Timer(1.5, webbrowser.open, args=["http://localhost:5000"]).start()
+
+    def _open_web(self):
+        """Tlacitko Web v menu — jen otevri prohlizec, server uz bezi."""
+        webbrowser.open("http://localhost:5000")
 
     def _quit(self):
         if self._web_process and self._web_process.poll() is None:
             self._web_process.terminate()
         pygame.quit()
         sys.exit()
+
+    def _submit_score(self, score):
+        if not _REQUESTS_OK or not self.auth_token:
+            return
+        def _thread():
+            try:
+                _requests.post(
+                    "http://localhost:5000/api/score",
+                    json={"token": self.auth_token, "score": score},
+                    timeout=5,
+                )
+            except Exception:
+                pass
+        threading.Thread(target=_thread, daemon=True).start()
 
     def run(self):
         while True:
@@ -79,6 +108,12 @@ class Game:
             if e.type == pygame.QUIT:
                 self._quit()
 
+            if self.state == "login":
+                token = self.login_screen.handle_event(e)
+                if token:
+                    self.auth_token = token
+                    self.state = "menu"
+
                 #nastavení tlačítek menu.
 #pokud jsem v menu tak hraje hudba menu a sleduju kliky ktere udelaju stav z menu game
             if self.state == "menu":
@@ -87,6 +122,7 @@ class Game:
                 if result == "game":
                     self.state = "game"
                     self._game_over_music_played = False
+                    self._score_submitted = False
                     self.gameplay.reset()
                     play_fight_music()
                 elif result == "settings":
@@ -132,14 +168,20 @@ class Game:
     def update(self):
         if self.state == "game":
             self.gameplay.update(pygame.key.get_pressed())
-            if self.gameplay.game_over and not self._game_over_music_played:
-                play_game_over_music()
-                self._game_over_music_played = True
+            if self.gameplay.game_over:
+                if not self._game_over_music_played:
+                    play_game_over_music()
+                    self._game_over_music_played = True
+                if not self._score_submitted:
+                    self._score_submitted = True
+                    self._submit_score(self.gameplay.score)
 
 #definice settings okna
 
     def draw(self):
-        if self.state == "menu":
+        if self.state == "login":
+            self.login_screen.draw(self.screen)
+        elif self.state == "menu":
             self.menu.draw(self.screen)
         elif self.state == "settings":
             if self._settings_origin == "menu":
