@@ -5,8 +5,37 @@ import pygame
 import random
 import sys
 import os
+import sqlite3
+
+# Připojení k databázi
+conn = sqlite3.connect("memory.db")
+cursor = conn.cursor()
+
+# Tabulka hráčů
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS themes (
+    theme_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    theme_name TEXT NOT NULL
+)
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS player_themes (
+    player_id INTEGER,
+    theme_id INTEGER,
+
+    PRIMARY KEY(player_id, theme_id),
+
+    FOREIGN KEY(player_id) REFERENCES players(player_id),
+    FOREIGN KEY(theme_id) REFERENCES themes(theme_id)
+)
+""")
+
+conn.commit()
 
 pygame.init()
+
+player_name = input("Zadej jméno hráče: ")
 
 # HERNÍ NASTAVENÍ
 WIDTH, HEIGHT = 600, 600
@@ -93,8 +122,10 @@ tiles = [tiles[i * COLS:(i + 1) * COLS] for i in range(ROWS)]
 revealed = [[False for _ in range(COLS)] for _ in range(ROWS)]
 first = None
 matches = 0
+moves = 0
 
 # Funkce pro vykreslení herní plochy
+# Vykreslí herní plochu
 def draw_board():
     win.fill(GRAY)
     for row in range(ROWS):
@@ -115,10 +146,47 @@ def draw_board():
 
     pygame.display.update()
 
+# Vrátí pozici kliknutého políčka
 def get_clicked_tile(pos):
     x, y = pos
     return y // TILE_SIZE, x // TILE_SIZE
 
+# Uloží výsledek hráče do databáze
+def save_score(name, score, moves):
+
+    # Kontrola jestli hráč už existuje
+    cursor.execute(
+        "SELECT player_id FROM players WHERE name = ?",
+        (name,)
+    )
+
+    player = cursor.fetchone()
+
+    # Pokud neexistuje -> vytvoří se
+    if player is None:
+        cursor.execute(
+            "INSERT INTO players(name) VALUES(?)",
+            (name,)
+        )
+
+        conn.commit()
+
+        player_id = cursor.lastrowid
+
+    else:
+        player_id = player[0]
+
+    # Uložení hry
+    cursor.execute(
+        """
+        INSERT INTO games(player_id, score, moves)
+        VALUES(?, ?, ?)
+        """,
+        (player_id, score, moves)
+    )
+
+    conn.commit()
+    
 # HERNÍ SMYČKA
 running = True
 while running:
@@ -138,6 +206,7 @@ while running:
                 if first is None:
                     first = (row, col)
                 else:
+                    moves += 1
                     r1, c1 = first
                     if tiles[row][col] != tiles[r1][c1]:
                         draw_board()
@@ -148,14 +217,43 @@ while running:
                         matches += 1
                     first = None
 # Výhra - od Ondřeje Černýho
+    score = max(0, 200 - moves * 5)
+
     if matches == (ROWS * COLS) // 2:
         win.fill(GRAY)
+        score_text = font.render(f"Tahy: {moves}", True, WHITE)
+        win.blit(score_text, (10, 10))
         win.blit(
             font.render("You Win!", True, WHITE),
             (WIDTH // 2 - 80, HEIGHT // 2 - 30)
         )
         pygame.display.update()
-        pygame.time.delay(2000)
+        save_score(player_name, score, moves)
+
+        print(f"Hráč: {player_name}")
+        print(f"Score: {score}")
+        print(f"Tahy: {moves}")
+
+        pygame.time.delay(3000)
         running = False
+
+# Výpis leaderboardu
+print("\n--- LEADERBOARD ---")
+
+cursor.execute("""
+SELECT players.name, games.score
+FROM games
+JOIN players
+ON games.player_id = players.player_id
+ORDER BY games.score DESC
+LIMIT 5
+""")
+
+scores = cursor.fetchall()
+
+for row in scores:
+    print(row[0], "-", row[1])
+
+conn.close()
 
 pygame.quit()
