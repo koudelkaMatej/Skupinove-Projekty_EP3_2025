@@ -5,6 +5,4 @@ saved_data - uložená data do souborů, př. max skore
 
 TO_BE_DONE
 
-1. Fonty, barvy apod. dát do asset složek a v kodu používat pouze odkazy na ně
-2. Dodělat settings (souvisí s bodem 1)
-3. Přidat více funkcí samotné hry
+1. pridat evoluce po x Bodech (everything is crab alike)

@@ -22,7 +22,8 @@ def get_db():
         host=pripojeni.HOST,
         user=pripojeni.USER,
         password=pripojeni.PASSWORD,
-        database=pripojeni.DATABASE
+        database=pripojeni.DATABASE,
+        use_pure=True,
     )
 
 
