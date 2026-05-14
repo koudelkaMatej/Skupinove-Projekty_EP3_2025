@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(python -c ' *)",
-      "Bash(ping dbs.spskladno.cz -n 2)",
-      "Bash(python -c \"import mysql.connector; print\\(mysql.connector.__version__\\)\")"
-    ]
-  }
-}

@@ -1,6 +1,9 @@
 # DB credentials - NEVER commit this file
 pripojeni.py
 
+# Flask runtime log
+flask.log
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

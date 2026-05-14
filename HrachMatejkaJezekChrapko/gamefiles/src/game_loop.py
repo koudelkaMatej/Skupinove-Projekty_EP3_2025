@@ -77,12 +77,19 @@ class Game:
             return
 
         if self._web_process is None or self._web_process.poll() is not None:
+            # Log Flask chyb do souboru flask.log (ne do terminalu -- Ctrl+C by zabilo hru)
+            log_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                "flask.log"
+            )
+            self._flask_log = open(log_path, "w")
             self._web_process = subprocess.Popen(
                 [sys.executable, self._web_path],
-                stdout=subprocess.DEVNULL,
-                stderr=None   # stderr jde do terminalu -- chyby jsou viditelne
+                stdout=self._flask_log,
+                stderr=self._flask_log
             )
             print(f"[WEB] Flask server spusten (PID {self._web_process.pid})")
+            print(f"[WEB] Logy: {log_path}")
 
     def _open_web(self):
         """Tlacitko Web v menu — jen otevri prohlizec, server uz bezi."""
@@ -110,10 +117,13 @@ class Game:
 
     def run(self):
         while True:
-            self.clock.tick(FPS)
-            self.handle_events()
-            self.update()
-            self.draw()
+            try:
+                self.clock.tick(FPS)
+                self.handle_events()
+                self.update()
+                self.draw()
+            except KeyboardInterrupt:
+                self._quit()
 
     def handle_events(self):
         mouse_pos = pygame.mouse.get_pos()
